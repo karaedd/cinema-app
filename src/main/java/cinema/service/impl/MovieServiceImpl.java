@@ -1,7 +1,6 @@
 package cinema.service.impl;
 
 import cinema.dao.MovieDao;
-import cinema.exception.DataProcessingException;
 import cinema.model.Movie;
 import cinema.service.MovieService;
 import java.util.List;
@@ -23,7 +22,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie get(Long id) {
         return movieDao.get(id).orElseThrow(
-                () -> new DataProcessingException("Can't get movie by id " + id));
+                () -> new RuntimeException("Can't get movie by id " + id));
     }
 
     @Override

@@ -1,13 +1,13 @@
 package cinema.controller;
 
 import cinema.dto.response.ShoppingCartResponseDto;
-import cinema.exception.DataProcessingException;
 import cinema.model.MovieSession;
+import cinema.model.ShoppingCart;
 import cinema.model.User;
 import cinema.service.MovieSessionService;
 import cinema.service.ShoppingCartService;
 import cinema.service.UserService;
-import cinema.service.mapper.ShoppingCartMapper;
+import cinema.service.mapper.ResponseDtoMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,36 +20,39 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/shopping-carts")
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
-    private final ShoppingCartMapper shoppingCartMapper;
     private final MovieSessionService movieSessionService;
     private final UserService userService;
+    private final ResponseDtoMapper<ShoppingCartResponseDto, ShoppingCart>
+            shoppingCartResponseDtoMapper;
 
     public ShoppingCartController(ShoppingCartService shoppingCartService,
-                                  ShoppingCartMapper shoppingCartMapper,
                                   UserService userService,
-                                  MovieSessionService movieSessionService) {
+                                  MovieSessionService movieSessionService,
+            ResponseDtoMapper<ShoppingCartResponseDto, ShoppingCart>
+                                      shoppingCartResponseDtoMapper) {
         this.shoppingCartService = shoppingCartService;
-        this.shoppingCartMapper = shoppingCartMapper;
         this.userService = userService;
         this.movieSessionService = movieSessionService;
+        this.shoppingCartResponseDtoMapper = shoppingCartResponseDtoMapper;
     }
 
     @PutMapping("/movie-sessions")
     public void addToCart(Authentication auth, @RequestParam Long movieSessionId) {
-        UserDetails details = (UserDetails) auth.getPrincipal();
-        String email = details.getUsername();
-        User user = userService.findByEmail(email).orElseThrow(
-                () -> new DataProcessingException("User with email " + email + " not found"));
+        User user = findUser(auth);
         MovieSession movieSession = movieSessionService.get(movieSessionId);
         shoppingCartService.addSession(movieSession, user);
     }
 
     @GetMapping("/by-user")
     public ShoppingCartResponseDto getByUser(Authentication auth) {
+        User user = findUser(auth);
+        return shoppingCartResponseDtoMapper.mapToDto(shoppingCartService.getByUser(user));
+    }
+
+    private User findUser(Authentication auth) {
         UserDetails details = (UserDetails) auth.getPrincipal();
         String email = details.getUsername();
-        User user = userService.findByEmail(email).orElseThrow(
-                () -> new DataProcessingException("User with email " + email + " not found"));
-        return shoppingCartMapper.mapToDto(shoppingCartService.getByUser(user));
+        return userService.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("User with email " + email + " not found"));
     }
 }

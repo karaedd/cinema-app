@@ -5,5 +5,5 @@ import cinema.model.Role;
 public interface RoleService {
     Role add(Role role);
 
-    Role get(String roleName);
+    Role getByName(String roleName);
 }

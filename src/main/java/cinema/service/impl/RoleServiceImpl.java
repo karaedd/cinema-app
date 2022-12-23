@@ -3,7 +3,6 @@ package cinema.service.impl;
 import cinema.dao.RoleDao;
 import cinema.model.Role;
 import cinema.service.RoleService;
-import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,8 +19,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role get(String roleName) {
-        return roleDao.get(roleName).orElseThrow(
-                () -> new NoSuchElementException("Role with name " + roleName + " not found"));
+    public Role getByName(String roleName) {
+        return roleDao.getByName(roleName).orElseThrow(() ->
+                new RuntimeException("Can`t get role by role name: " + roleName));
     }
 }
