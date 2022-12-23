@@ -1,7 +1,6 @@
 package cinema.service.impl;
 
 import cinema.dao.MovieSessionDao;
-import cinema.exception.DataProcessingException;
 import cinema.model.MovieSession;
 import cinema.service.MovieSessionService;
 import java.time.LocalDate;
@@ -29,7 +28,7 @@ public class MovieSessionServiceImpl implements MovieSessionService {
     @Override
     public MovieSession get(Long id) {
         return movieSessionDao.get(id).orElseThrow(
-                () -> new DataProcessingException("Session with id " + id + " not found"));
+                () -> new RuntimeException("Session with id " + id + " not found"));
     }
 
     @Override

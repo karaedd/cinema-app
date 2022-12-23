@@ -1,12 +1,15 @@
 package cinema.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderResponseDto {
     private Long id;
     private List<Long> ticketIds;
     private Long userId;
-    private String orderTime;
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
+    private LocalDateTime orderTime;
 
     public Long getId() {
         return id;
@@ -32,11 +35,11 @@ public class OrderResponseDto {
         this.userId = userId;
     }
 
-    public String getOrderTime() {
+    public LocalDateTime getOrderTime() {
         return orderTime;
     }
 
-    public void setOrderTime(String orderTime) {
+    public void setOrderTime(LocalDateTime orderTime) {
         this.orderTime = orderTime;
     }
 }

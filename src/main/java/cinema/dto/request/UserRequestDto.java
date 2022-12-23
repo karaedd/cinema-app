@@ -2,6 +2,7 @@ package cinema.dto.request;
 
 import cinema.lib.FieldsValueMatch;
 import cinema.lib.ValidEmail;
+import java.util.Set;
 import javax.validation.constraints.Size;
 
 @FieldsValueMatch(
@@ -15,6 +16,7 @@ public class UserRequestDto {
     @Size(min = 8, max = 40)
     private String password;
     private String repeatPassword;
+    private Set<Long> rolesIds;
 
     public String getEmail() {
         return email;
@@ -26,5 +28,9 @@ public class UserRequestDto {
 
     public String getRepeatPassword() {
         return repeatPassword;
+    }
+
+    public Set<Long> getRolesIds() {
+        return rolesIds;
     }
 }
